@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_book"
+        android:title="Giáo dục" />
+    <item
+        android:id="@+id/chat"
+        android:icon="@drawable/ic_chat"
+        android:title="Trò chuyện" />
+    <item
+        android:id="@+id/community"
+        android:icon="@drawable/ic_community"
+        android:title="Cộng đồng" />
+    <item
+        android:id="@+id/note"
+        android:icon="@drawable/ic_note"
+        android:title="Ghi chú" />
+    <item
+        android:id="@+id/setting"
+        android:icon="@drawable/ic_setting"
+        android:title="Cài đặt" />
+</menu>

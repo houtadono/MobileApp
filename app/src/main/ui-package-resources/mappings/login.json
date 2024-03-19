@@ -1,0 +1,6 @@
+{
+    "target": "Login",
+    "package": "vn.id.houta.myapplication.login",
+    "generateImplementation": true,
+    "generatePreviews": true
+}

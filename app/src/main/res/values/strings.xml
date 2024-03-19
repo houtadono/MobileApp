@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">MobileApp</string>
+    //Headings-slider
+    <string name="heading_one">Trò chơi vui nhộn</string>
+    <string name="heading_two">Câu đố trắc nghiệm</string>
+    <string name="heading_three">Hoạt động màu sắc</string>
+    <string name="heading_fourth">Hoạt động học số đếm</string>
+
+    //Description-slider
+    <string name="desc_one">Hoạt động giải trí, phát triển kỹ năng quan sát của trẻ bằng hình ảnh</string>
+    <string name="desc_two">Trả lời câu đố thông qua câu hỏi trắc nghiệm gây hứng thú tới đa số trẻ em</string>
+    <string name="desc_three">Phát triển khả năng nhận diện và khả năng tư duy cho bé bằng phương pháp học với màu sắc</string>
+    <string name="desc_fourth">Phát triển khả năng đếm và hiểu các khái niệm cơ bản với phương pháp giảng dạy sinh động</string>
+
+    //Forget-passwd
+    <string name="title_1_forgetpasswd">Quên mật khẩu</string>
+    <string name="title_2_forgetpasswd">Xác minh</string>
+    <string name="title_3_forgetpasswd">Khôi phục mật khẩu</string>
+
+    <string name="txt_1_forgetpasswd">Nhập địa chỉ email</string>
+    <string name="txt_2_forgetpasswd">Nhập mã xác nhận</string>
+    <string name="txt_31_forgetpasswd">Nhập mật khẩu mới</string>
+    <string name="txt_32_forgetpasswd">Xác nhận mật khẩu</string>
+    <string name="get_confirm_code">Lấy mã xác nhận</string>
+    <string name="confirm">Xác nhận</string>
+
+    <string name="decs_get_confirm_code_again">Nếu bạn không nhận được mã,</string>
+    <string name="get_confirm_code_again">Gửi lại</string>
+
+    <string name="restore_passwd">Nhập mật khẩu mới</string>
+    <string name="restore_passwd_confirm">Xác nhận mật khẩu</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="tittle_fragment_module4_submain1">Học số đếm</string>
+</resources>

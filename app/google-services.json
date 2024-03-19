@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1051816091040",
+    "firebase_url": "https://mobile-app-d20at-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "mobile-app-d20at",
+    "storage_bucket": "mobile-app-d20at.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051816091040:android:21d983f08b200c1f1318c5",
+        "android_client_info": {
+          "package_name": "vn.id.houta.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK0A2Jz3Io3jHaz08q7_tNyNtfrFNgkYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
