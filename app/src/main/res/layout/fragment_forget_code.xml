@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF"
+    android:orientation="vertical"
+    android:layout_marginTop="30dp"
+    app:flow_horizontalAlign="center"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    >
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center"
+        android:text="@string/title_2_forgetpasswd"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/titleImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-50dp"
+        android:alpha="0"
+        android:background="#00FFFFFF"
+        android:scaleX="0.6"
+        android:src="@drawable/module1" />
+
+    <TextView
+        android:id="@+id/texttitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-20dp"
+        android:fontFamily="@font/almarai_bold"
+        android:text="@string/txt_2_forgetpasswd"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="28dp"
+        app:layout_constraintTop_toTopOf="@+id/guideline5"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+
+    <!--        <com.google.android.material.textfield.TextInputLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColorHint="@color/gray"-->
+    <!--            app:helperTextEnabled="false"-->
+
+    <!--            app:hintAnimationEnabled="false"-->
+    <!--            app:hintEnabled="false">-->
+
+    <!--            <EditText-->
+    <!--                android:id="@+id/code1"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:background="@drawable/bg_auth_code"-->
+    <!--                android:ems="1"-->
+    <!--                android:fontFamily="@font/almarai_bold"-->
+    <!--                android:gravity="center"-->
+    <!--                android:inputType="numberDecimal"-->
+    <!--                android:maxLength="1"-->
+    <!--                android:textColor="@color/bg_btn"-->
+    <!--                android:textColorHint="@color/gray"-->
+    <!--                android:textSize="20sp" />-->
+    <!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+    <!--    <com.goodiebag.pinview.Pinview-->
+    <!--        android:id="@+id/pinview"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="33dp"-->
+    <!--        android:layout_marginBottom="32dp"-->
+    <!--        android:textColor="@color/active"-->
+    <!--        android:visibility="visible"-->
+    <!--        app:cursorVisible="false"-->
+    <!--        app:forceKeyboard="true"-->
+    <!--        app:hint="9"-->
+    <!--        app:inputType="number"-->
+    <!--        app:password="false"-->
+    <!--        app:pinBackground="@drawable/example_drawable"-->
+    <!--        app:pinHeight="56dp"-->
+    <!--        app:pinLength="4"-->
+    <!--        app:pinWidth="48dp"-->
+    <!--        app:splitWidth="20dp"-->
+    <!--        app:textSize="14dp" />-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp">
+
+        <com.chaos.view.PinView
+            android:id="@+id/pinview"
+            style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:cursorVisible="true"
+            android:inputType="number|numberDecimal"
+            android:itemBackground="@drawable/bg_radius_white"
+
+            android:textColor="@drawable/text_colors"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cursorColor="@color/active"
+            app:cursorWidth="2dp"
+            app:hideLineWhenFilled="false"
+            app:itemCount="4"
+            app:itemHeight="60dp"
+            app:itemRadius="10dp"
+            app:itemSpacing="14dp"
+            app:itemWidth="58dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineColor="@drawable/line_colors"
+            app:lineWidth="2dp"
+            app:viewType="rectangle"
+            ></com.chaos.view.PinView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btn_confirm_authcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_radius_blue"
+        android:backgroundTint="@color/bg_btn"
+        android:fontFamily="@font/almarai"
+        android:padding="8dp"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+</LinearLayout>
+

@@ -5,4 +5,8 @@
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromXDelta="0"
         android:toXDelta="-100%p" />
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:duration="@android:integer/config_mediumAnimTime" />
 </set>

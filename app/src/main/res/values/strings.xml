@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MobileApp</string>
+
     //Headings-slider
     <string name="heading_one">Trò chơi vui nhộn</string>
     <string name="heading_two">Câu đố trắc nghiệm</string>
@@ -12,6 +13,9 @@
     <string name="desc_three">Phát triển khả năng nhận diện và khả năng tư duy cho bé bằng phương pháp học với màu sắc</string>
     <string name="desc_fourth">Phát triển khả năng đếm và hiểu các khái niệm cơ bản với phương pháp giảng dạy sinh động</string>
 
+    // Register
+    <string name="select_age">Chọn tuổi của bé</string>
+    
     //Forget-passwd
     <string name="title_1_forgetpasswd">Quên mật khẩu</string>
     <string name="title_2_forgetpasswd">Xác minh</string>
@@ -29,22 +33,29 @@
 
     <string name="restore_passwd">Nhập mật khẩu mới</string>
     <string name="restore_passwd_confirm">Xác nhận mật khẩu</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-
     <string name="tittle_fragment_module4_submain1">Học số đếm</string>
+
+    // No internet connection
+    <string name="oops">Rất tiếc!</string>
+    <string name="no_internet_connection">Không có kết nối Internet</string>
+    <string name="check_internet_connection">Vui lòng kiểm tra lại kết nối Internet của bạn</string>
+    <string name="retry">Thử lại</string>
+    <string name="close">Đóng</string>
+
+    // module 4
+    <string name="module4">Số đếm</string>
+    <string name="module4_1">Học số đếm</string>
+    <string name="module4_2">Luyện tập số đếm</string>
+    
+    //feedback video
+    <string name="feedback">Phản hồi</string>
+    <string name="feedback_title">Phản hồi</string>
+    <string name="feedback_video_desc">Bạn có phản hồi gì về video này?</string>
+    <string name="feedback_video_option1">Giải thích chưa rõ ràng</string>
+    <string name="feedback_video_option2">Tài liệu không chính xác</string>
+    <string name="feedback_video_option3">Âm thanh nghe không rõ</string>
+    <string name="feedback_video_option4">Giải thích quá nhanh không theo kịp</string>
+    <string name="feedback_video_option5">Hình ảnh bị vỡ</string>
+    <string name="feedback_video_option6">Khác</string>
+    <string name="feedback_video_content">Chia sẻ lý do bạn báo cáo vấn đề này</string>
 </resources>
