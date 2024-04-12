@@ -2,6 +2,8 @@ package vn.id.houta.myapplication.model;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+
 public class QuestionCounting extends Question{
     private Bitmap imageBitmap;
 
@@ -9,9 +11,9 @@ public class QuestionCounting extends Question{
         super();
     }
 
-    public QuestionCounting(String questionText, String optionA, String optionB, String optionC, String optionD, String correctAnswer,
+    public QuestionCounting(String questionText, ArrayList<String> options, String correctAnswer,
                             Bitmap imageBitmap) {
-        super(questionText, optionA, optionB, optionC, optionD, correctAnswer);
+        super(questionText, options, correctAnswer);
         this.imageBitmap = imageBitmap;
     }
 

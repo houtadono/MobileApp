@@ -83,14 +83,11 @@ public class Module41Fragment extends Fragment {
         listViewLesson = view.findViewById(R.id.listViewLesson);
         lessonListViewAdapter = new LessonListViewAdapter(getActivity(), listLesson);
         listViewLesson.setAdapter(lessonListViewAdapter);
-        new FirebaseHelper().getLessonsForUser(new FirebaseHelper.GetLessonCallback() {
-            @Override
-            public void onGetLessonCallback(Lesson lesson) {
-                if (lesson != null) {
-                    listLesson.add(lesson);
-                    System.out.println("add pre lesson " + lesson.getLessonId());
-                    lessonListViewAdapter.notifyDataSetChanged();
-                }
+        new FirebaseHelper().getLessonsForUser(lesson -> {
+            if (lesson != null) {
+                listLesson.add(lesson);
+                System.out.println("add pre lesson " + lesson.getLessonId());
+                lessonListViewAdapter.notifyDataSetChanged();
             }
         });
 

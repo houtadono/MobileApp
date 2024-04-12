@@ -22,7 +22,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        String t;
         Calendar calendar = Calendar.getInstance();
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
 
@@ -39,16 +38,13 @@ public class HomeFragment extends Fragment {
         String greeting = "Chào "+timeOfDay+", "+ name;
         ((TextView)view.findViewById(R.id.textViewGreeting)).setText(greeting);
 
-        view.findViewById(R.id.module4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.hide(HomeFragment.this);
-                fragmentTransaction.add(R.id.frame_layout, new Module4Fragment());
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
+        view.findViewById(R.id.module4).setOnClickListener(v -> {
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.hide(HomeFragment.this);
+            fragmentTransaction.add(R.id.frame_layout, new Module4Fragment());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
         return view;
     }

@@ -15,43 +15,67 @@ import java.util.Objects;
 import java.util.Random;
 
 import vn.id.houta.myapplication.model.Question;
+import vn.id.houta.myapplication.model.QuestionComparison;
 
 public class QuestionGenerator {
     public static ArrayList<Question> generateListQuestion(Context context, int numberOfQuestions) {
         ArrayList<Question> questionList = new ArrayList<>();
-        Random random = new Random();
 
         for (int i = 0; i < numberOfQuestions; i++) {
-//            int randomIndex = random.nextInt(questions.length);
-//
-//            Question question = new Question(
-//                    questions[randomIndex],
-//                    imageResources[randomIndex],
-//                    optionA[randomIndex],
-//                    optionB[randomIndex],
-//                    optionC[randomIndex],
-//                    optionD[randomIndex],
-//                    correctAnswers[randomIndex]
-//            );
-
-//            questionList.add(question);
+            questionList.add(generateQuestionComparison(context));
         }
         return questionList;
     }
 
-    public static Question generateQuestion(String type) {
+    public Question generateQuestion(String type, Context context) {
         Question question = new Question();
-        Random random = new Random();
-//        if (type.equals("comparison")) {
-//            question = new QuestionComparison();
-//            Bitmap img1 =
-//        }
+        String title_quest = null;
+        if (type.equals("comparison")) {
+            question = new QuestionComparison();
+            Object[] questionInfo1 = generateRandomImage(context);
+            String name1 = (String) questionInfo1[0];
+            int count1 = (int) questionInfo1[1];
+            Bitmap img1 = (Bitmap) questionInfo1[2];
+
+            Object[] questionInfo2 = generateRandomImage(context);
+            String name2 = (String) questionInfo2[0];
+            int count2 = (int) questionInfo2[1];
+            Bitmap img2 = (Bitmap) questionInfo2[2];
+            ((QuestionComparison) question).setImageRightBitmap(img2);
+
+            title_quest = String.format("So sánh số lượng %s và %s", name1, name2);
+        }
+        question.setQuestionText(title_quest);
+
 //
         return question;
     }
 
+    public static QuestionComparison generateQuestionComparison(Context context) {
 
-    private Object[] generateRandomImage(Context context) {
+        Object[] questionInfo1 = generateRandomImage(context);
+        String name1 = (String) questionInfo1[0];
+        int count1 = (int) questionInfo1[1];
+        Bitmap img1 = (Bitmap) questionInfo1[2];
+
+        Object[] questionInfo2 = generateRandomImage(context);
+        String name2 = (String) questionInfo2[0];
+        int count2 = (int) questionInfo2[1];
+        Bitmap img2 = (Bitmap) questionInfo2[2];
+
+        String questionText = String.format("So sánh số lượng %s và %s", name1, name2);
+        String correctAnswer = "C";
+        if(count1 < count2) {
+            correctAnswer = "A";
+        }else if(count1 > count2){
+            correctAnswer = "B";
+        }
+        return new QuestionComparison(questionText, correctAnswer, img1, img2);
+    }
+
+
+
+    private static Object[] generateRandomImage(Context context) {
         Object[] nameAndImage = getRandomeElementImage();
 
         String name = (String) nameAndImage[0];
@@ -60,8 +84,12 @@ public class QuestionGenerator {
         );
 
         Bitmap img = BitmapFactory.decodeResource(context.getResources(), imageId);
-        int maxWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int maxHeight = context.getResources().getDisplayMetrics().heightPixels;
+        int maxWidth = context.getResources().getDisplayMetrics().widthPixels/4;
+        int maxHeight = context.getResources().getDisplayMetrics().heightPixels/4;
+//        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.my_image);
+//        int newWidth = originalBitmap.getWidth() / 2; // Giảm chiều rộng đi một nửa
+//        int newHeight = originalBitmap.getHeight() / 2; // Giảm chiều cao đi một nửa
+//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
         img = resizeBitmap(img, maxWidth, maxHeight);
 
         Random rand = new Random();
@@ -93,7 +121,7 @@ public class QuestionGenerator {
         return new Object[]{name, numRand, resultBitmap};
     }
 
-    public Object[] getRandomeElementImage(){
+    public static Object[] getRandomeElementImage(){
         String jsonString = "{\"xe ô tô\": [\"ele_car1\", \"ele_car2\", \"ele_car3\", \"ele_car4\"], " +
                 "\"con rùa\": [\"ele_turtle\"], " +
                 "\"con ong\": [\"ele_bee\"], " +
@@ -122,7 +150,7 @@ public class QuestionGenerator {
         }
     }
 
-    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+    private static Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float scaleWidth = ((float) maxWidth) / width;

@@ -1,6 +1,8 @@
 package vn.id.houta.myapplication.model;
 
-public class Quiz {
+import java.io.Serializable;
+
+public class Quiz implements Serializable {
     private String quizId;
     private String title;
     private String image;

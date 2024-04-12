@@ -1,23 +1,20 @@
 package vn.id.houta.myapplication.model;
 
+import java.util.ArrayList;
+
 public class Question {
     private String questionText;
-    private String optionA;
-    private String optionB;
-    private String optionC;
-    private String optionD;
+    private ArrayList<String> options;
     private String correctAnswer, selectedAnswer;
 
-    public Question() {
+
+    public Question(String questionText, ArrayList<String> options, String correctAnswer) {
+        this.questionText = questionText;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
     }
 
-    public Question(String questionText, String optionA, String optionB, String optionC, String optionD, String correctAnswer) {
-        this.questionText = questionText;
-        this.optionA = optionA;
-        this.optionB = optionB;
-        this.optionC = optionC;
-        this.optionD = optionD;
-        this.correctAnswer = correctAnswer;
+    public Question() {
     }
 
     public boolean isAnswerCorrect() {
@@ -32,7 +29,8 @@ public class Question {
         this.selectedAnswer = selectedAnswer;
     }
 
-    // Getter methods
+    // Getter và setter cho questionText và correctAnswer
+
     public String getQuestionText() {
         return questionText;
     }
@@ -41,44 +39,20 @@ public class Question {
         this.questionText = questionText;
     }
 
-    public void setOptionA(String optionA) {
-        this.optionA = optionA;
+    public ArrayList<String> getOptions() {
+        return options;
     }
 
-    public void setOptionB(String optionB) {
-        this.optionB = optionB;
-    }
-
-    public void setOptionC(String optionC) {
-        this.optionC = optionC;
-    }
-
-    public void setOptionD(String optionD) {
-        this.optionD = optionD;
-    }
-
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-
-    public String getOptionA() {
-        return optionA;
-    }
-
-    public String getOptionB() {
-        return optionB;
-    }
-
-    public String getOptionC() {
-        return optionC;
-    }
-
-    public String getOptionD() {
-        return optionD;
+    public void setOptions(ArrayList<String> options) {
+        this.options = options;
     }
 
     public String getCorrectAnswer() {
         return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 }
 

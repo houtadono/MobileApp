@@ -2,6 +2,9 @@ package vn.id.houta.myapplication.model;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class QuestionComparison extends Question{
     private Bitmap imageLeftBitmap;
     private Bitmap imageRightBitmap;
@@ -10,9 +13,9 @@ public class QuestionComparison extends Question{
         super();
     }
 
-    public QuestionComparison(String questionText, String optionA, String optionB, String optionC, String correctAnswer,
+    public QuestionComparison(String questionText, String correctAnswer,
                               Bitmap imageLeftBitmap, Bitmap imageRightBitmap) {
-        super(questionText, optionA, optionB, optionC, null, correctAnswer); // Không cần optionD
+        super(questionText, new ArrayList<>(Arrays.asList("A. <", "B. >", "C. =")), correctAnswer);
         this.imageLeftBitmap = imageLeftBitmap;
         this.imageRightBitmap = imageRightBitmap;
     }

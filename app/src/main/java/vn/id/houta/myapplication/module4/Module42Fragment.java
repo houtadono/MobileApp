@@ -1,6 +1,7 @@
 package vn.id.houta.myapplication.module4;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
+import vn.id.houta.myapplication.AuthenticationActivity;
 import vn.id.houta.myapplication.R;
+import vn.id.houta.myapplication.RegisterActivity;
 import vn.id.houta.myapplication.database.FirebaseHelper;
 import vn.id.houta.myapplication.model.Quiz;
 
@@ -98,7 +101,10 @@ public class Module42Fragment extends Fragment {
             viewQuiz.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent intent = new Intent(requireActivity(), QuizActivity.class);
+                    intent.putExtra("QUIZ_EXTRA", currentQuiz);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
             });
 
