@@ -98,6 +98,8 @@
         <ListView
             android:id="@+id/listViewLesson"
             android:layout_width="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
             android:layout_height="match_parent"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"

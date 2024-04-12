@@ -1,5 +1,11 @@
 package vn.id.houta.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -9,12 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import vn.id.houta.myapplication.databinding.ActivityMainBinding;
 import vn.id.houta.myapplication.module4.Module41VideoFragment;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         fragmentHome = new HomeFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, fragmentHome).commit();
         activeFragment = fragmentHome;

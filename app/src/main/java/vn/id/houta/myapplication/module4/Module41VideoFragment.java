@@ -2,13 +2,13 @@ package vn.id.houta.myapplication.module4;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +22,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.Player;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.util.Log;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import vn.id.houta.myapplication.MainActivity;
 import vn.id.houta.myapplication.R;
+import vn.id.houta.myapplication.database.FirebaseHelper;
 import vn.id.houta.myapplication.model.Lesson;
 import vn.id.houta.myapplication.util.FeedbackUtils;
 
@@ -45,38 +50,50 @@ public class Module41VideoFragment extends Fragment {
     boolean isLock = false;
     TextView textViewSubTittleVideo;
     private Handler handler;
+    int save_time = 0;
     View view;
-    Lesson lesson;
+    Lesson lesson, nextLesson;
+    ArrayList<Lesson> listLesson;
+    FirebaseHelper fb;
 
-    public Module41VideoFragment(Lesson lesson) {
+
+    public Module41VideoFragment(Lesson lesson, ArrayList<Lesson> listLesson) {
         this.lesson = lesson;
+        this.listLesson = listLesson;
+        if (listLesson.size() >= lesson.getStt())
+            this.nextLesson = listLesson.get(lesson.getStt());
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("UnsafeOptInUsageError")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                                                                      Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_module4_1_video, container, false);
-//        videoView = (VideoView) view.findViewById(R.id.videoView);
-//        MediaController mediaController = new MediaController(this.getContext());
-//        mediaController.setMediaPlayer(videoView);
-//        videoView.setMediaController(mediaController);
-//        videoView.setVideoURI(Uri.parse("android.resource://"+this.getContext().getPackageName()+"/"+R.raw.videoso1));
-//        videoView.start();
+        fb = new FirebaseHelper();
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)requireActivity()).setSupportActionBar(toolbar);
 //        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View v) {
-                exoPlayer.release();
-                requireActivity().getSupportFragmentManager().popBackStack();
+            public void handleOnBackPressed() {
+                System.out.println("call01");
+                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+                {
+                    bt_fullscreen.performClick();
+                }else{
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    System.out.println("call02");
+                }
             }
-        });
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), onBackPressedCallback);
+        toolbar.setNavigationOnClickListener(v -> onBackPressedCallback.handleOnBackPressed());
 
         ((TextView) view.findViewById(R.id.textViewTittleVideo)).setText(this.lesson.getTitle());
-        int startTimeMillis = this.lesson.getTimeStudy() * 1000;
+        int startTimeMillis = this.lesson.getUserLesson().getTimesStudy() * 1000;
+        save_time = startTimeMillis;
         full_toolbar = view.findViewById(R.id.full_toolbar);
         handler  = new Handler(Looper.getMainLooper());
 
@@ -85,6 +102,7 @@ public class Module41VideoFragment extends Fragment {
         bt_fullscreen = view.findViewById(R.id.bt_fullscreen);
         ImageView bt_lockscreen = view.findViewById(R.id.exo_lock);
         textViewSubTittleVideo = view.findViewById(R.id.textViewSubTittleVideo);
+        textViewSubTittleVideo.setText(this.lesson.getTitle());
         textViewSubTittleVideo.setVisibility(View.GONE);
 
         bt_fullscreen.setOnClickListener(view ->
@@ -93,7 +111,7 @@ public class Module41VideoFragment extends Fragment {
             {
                 bt_fullscreen.setImageDrawable(
                         ContextCompat
-                                .getDrawable(this.getContext().getApplicationContext(), R.drawable.ic_baseline_fullscreen_exit));
+                                .getDrawable(requireContext().getApplicationContext(), R.drawable.ic_baseline_fullscreen_exit));
                 requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 textViewSubTittleVideo.setVisibility(View.VISIBLE);
                 ((MainActivity)requireActivity()).hideBottomNavigationBarAndStatus();
@@ -101,7 +119,7 @@ public class Module41VideoFragment extends Fragment {
             } else
             {
                 bt_fullscreen.setImageDrawable(ContextCompat
-                        .getDrawable(this.getContext().getApplicationContext(), R.drawable.ic_baseline_fullscreen));
+                        .getDrawable(requireContext().getApplicationContext(), R.drawable.ic_baseline_fullscreen));
                requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 textViewSubTittleVideo.setVisibility(View.GONE);
                 ((MainActivity)requireActivity()).showBottomNavigationBarAndStatus();
@@ -114,11 +132,11 @@ public class Module41VideoFragment extends Fragment {
         {
             if (!isLock)
             {
-                bt_lockscreen.setImageDrawable(ContextCompat.getDrawable(this.getContext().getApplicationContext(), R.drawable.ic_baseline_lock));
+                bt_lockscreen.setImageDrawable(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.ic_baseline_lock));
 //                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
             } else
             {
-                bt_lockscreen.setImageDrawable(ContextCompat.getDrawable(this.getContext().getApplicationContext(), R.drawable.ic_outline_lock_open));
+                bt_lockscreen.setImageDrawable(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.ic_outline_lock_open));
 //                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }
             isLock = !isLock;
@@ -127,7 +145,8 @@ public class Module41VideoFragment extends Fragment {
 
         //instance the player with skip back duration 5 second or forward 5 second
         //5000 millisecond = 5 second
-        exoPlayer = new ExoPlayer.Builder(this.getContext())
+
+        exoPlayer = new ExoPlayer.Builder(requireContext())
                 .setSeekBackIncrementMs(5000)
                 .setSeekForwardIncrementMs(5000)
                 .build();
@@ -150,20 +169,11 @@ public class Module41VideoFragment extends Fragment {
                     //then if streamed is loaded we hide the progress bar
                     progressBar.setVisibility(View.GONE);
                 }
-
-                if(!exoPlayer.getPlayWhenReady())
-                {
-                    handler.removeCallbacks(updateProgressAction);
-                }
-                else
-                {
-                    onProgress();
-                }
             }
         });
 
-//        Uri videoUrl = Uri.parse("android.resource://"+this.getContext().getPackageName()+"/"+R.raw.videoso1);
-        Uri videoUrl = Uri.parse("https://v1.yt-cdn.xyz/sv1/api/v1/download/?dm=y2meta.net&id=RFXrPwsV1kM&t=720p");
+//        Uri videoUrl = Uri.parse("android.resource://"+requireContext().getPackageName()+"/"+R.raw.videoso1);
+        Uri videoUrl = Uri.parse(this.lesson.getLink());
 
         MediaItem media = MediaItem.fromUri(videoUrl);
         exoPlayer.setMediaItem(media);
@@ -173,126 +183,86 @@ public class Module41VideoFragment extends Fragment {
         exoPlayer.addListener(new Player.Listener() {
             @Override
             public void onPlaybackStateChanged(int state) {
-                // Kiểm tra khi nào video có thể phát
                 switch (state) {
                     case Player.STATE_READY:
-                        // Trạng thái STATE_READY chỉ ra rằng video đã sẵn sàng để phát
-                        Log.d("ExoPlayer", "Video có thể phát");
                         if (startTimeMillis > 0 & isFirstTimeReady[0]) {
                             new AlertDialog.Builder(getContext())
                                     .setTitle("Tiếp tục học")
                                     .setMessage("Bạn có muốn xem tiếp tục từ " + lesson.getTimeStudyStr() + " ?")
-                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            exoPlayer.seekTo(0);
-                                            exoPlayer.play();
-                                        }
+                                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                                        exoPlayer.seekTo(0);
+                                        exoPlayer.play();
                                     })
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface arg0, int arg1) {
-                                            exoPlayer.seekTo(startTimeMillis);
-                                            exoPlayer.play();
-                                        }
+                                    .setPositiveButton(android.R.string.yes, (arg0, arg1) -> {
+                                        exoPlayer.seekTo(startTimeMillis);
+                                        exoPlayer.play();
                                     }).create().show();
                         }else{
                             exoPlayer.play();
                         }
+                        save_time = (int) exoPlayer.getCurrentPosition() / 1000;
                         isFirstTimeReady[0] = false;
                         break;
                     case Player.STATE_BUFFERING:
-                        // Trạng thái STATE_BUFFERING chỉ ra rằng video đang được tải hoặc chuẩn bị để phát
-                        Log.d("ExoPlayer", "Video đang được tải hoặc chuẩn bị để phát");
+                        Log.d("ExoPlayer", "Video đang được tải hoặc chuẩn bị để phát state 2");
                         break;
                     case Player.STATE_IDLE:
+                        save_time = (int) exoPlayer.getCurrentPosition() / 1000;
                     case Player.STATE_ENDED:
-                        // Trạng thái STATE_IDLE và STATE_ENDED chỉ ra rằng video không thể phát
-                        Log.d("ExoPlayer", "Video không thể phát");
+                        save_time = 0;
+                        Log.d("ExoPlayer", "Video không thể phát / kết thúc 4");
                         break;
                 }
             }
         });
 
-//        if (startTimeMillis > 0)
-//            new AlertDialog.Builder(this.getContext())
-//                .setTitle("Tiếp tục học")
-//                .setMessage("Bạn có muốn xem tiếp tục từ " + this.lesson.getTimeStudyStr()+ " ?")
-//                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        exoPlayer.play();
-//                    }
-//                })
-//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface arg0, int arg1) {
-//                        exoPlayer.seekTo(startTimeMillis);
-//                        exoPlayer.play();
-//                    }
-//                }).create().show();
-//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-//                {
-//                    bt_fullscreen.performClick();
-//                }
-//                exoPlayer.release();
-//                requireActivity().getSupportFragmentManager().popBackStack();
-//            }
-//        };
-//        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-        view.findViewById(R.id.btn_feedback).setOnClickListener(new View.OnClickListener() {
+        // Heart
+        LikeButton btn_heart = view.findViewById(R.id.heart_button);
+        btn_heart.setLiked(this.lesson.getUserLesson().isLiked());
+        btn_heart.setOnLikeListener(new OnLikeListener() {
             @Override
-            public void onClick(View v) {
-                FeedbackUtils.showFeebackVideoAlert(getContext());
+            public void liked(LikeButton likeButton) {
+                lesson.getUserLesson().setLiked(true);
+                new FirebaseHelper().setHeartLessonUser(lesson.getLessonId(), true);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                lesson.getUserLesson().setLiked(false);
+                new FirebaseHelper().setHeartLessonUser(lesson.getLessonId(), false);
             }
         });
+
+        TextView textView_heartCount = (TextView) view.findViewById(R.id.textViewHeartCount);
+        textView_heartCount.setText(String.valueOf(this.lesson.getLikeCount()));
+        fb.getHeartCountLesson(c->{
+            textView_heartCount.setText(String.valueOf(c));
+        }, this.lesson.getLessonId());
+
+        // Feedback
+        view.findViewById(R.id.btn_feedback).setOnClickListener(v -> FeedbackUtils.showFeebackVideoAlert(getContext()));
+
+        if(this.nextLesson != null){
+            ((TextView)view.findViewById(R.id.textViewNextTittleVideo)).setText(this.nextLesson.getTitle());
+            view.findViewById(R.id.btn_next_lesson).setOnClickListener(v -> {
+                onBackPressedCallback.handleOnBackPressed();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Fragment nextFragment = new Module41VideoFragment(this.nextLesson, listLesson);
+                fragmentTransaction.add(R.id.frame_layout, nextFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            });
+        }else{
+            view.findViewById(R.id.card_next_lesson).setVisibility(View.GONE);
+        }
         return view;
     }
-
-    private OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            System.out.println("Call back from video player");
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-            {
-                bt_fullscreen.performClick();
-            }else{
-                exoPlayer.release();
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
-        }
-    };
 
     @Override
     public void onStart() {
         super.onStart();
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), onBackPressedCallback);
-    }
-
-    private Runnable updateProgressAction = () -> onProgress();
-    boolean check = false;
-    private void onProgress()
-    {
-        ExoPlayer player= exoPlayer;
-        long position = player == null? 0 : player.getCurrentPosition();
-        handler.removeCallbacks(updateProgressAction);
-        int playbackState = player ==null? Player.STATE_IDLE : player.getPlaybackState();
-        if(playbackState != Player.STATE_IDLE && playbackState!= Player.STATE_ENDED)
-        {
-            long delayMs ;
-            if(player.getPlayWhenReady() && playbackState == Player.STATE_READY)
-            {
-                delayMs  = 1000 - position % 1000;
-                if(delayMs < 200)
-                {
-                    delayMs+=1000;
-                }
-            }
-            else{
-                delayMs = 1000;
-            }
-        }
+//        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), onBackPressedCallback);
     }
 
     void lockScreen(boolean lock)
@@ -311,28 +281,17 @@ public class Module41VideoFragment extends Fragment {
             sec_bottom.setVisibility(View.VISIBLE);
         }
     }
-
-    public void continueBackPressed(){
-        onBackPressedCallback.setEnabled(true);
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), onBackPressedCallback);
-    }
-
-    public void stopVideo(){
-        System.out.println("stopVideo");
-        exoPlayer.stop();
-        onBackPressedCallback.setEnabled(false);
-        onBackPressedCallback.remove();
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
-    }
-
-    // pause or release the player prevent memory leak
     @Override
     public void onStop()
     {
         super.onStop();
-        onBackPressedCallback.setEnabled(false);
+        System.out.println("state: "+ exoPlayer.getPlaybackState());
+//        if (exoPlayer.getPlaybackState() == Player.STATE_BUFFERING){
+//            return;
+//        }
+//        int timesStudy = (int) exoPlayer.getCurrentPosition() / 1000;
+        lesson.getUserLesson().setTimesStudy(save_time);
+        fb.saveTimeStudyLessonForUser(lesson.getLessonId(), save_time);
         exoPlayer.stop();
     }
 
@@ -342,7 +301,6 @@ public class Module41VideoFragment extends Fragment {
         super.onDestroy();
         exoPlayer.release();
         handler.removeCallbacksAndMessages(null);
-        onBackPressedCallback.setEnabled(false);
     }
 
     @Override
@@ -350,14 +308,10 @@ public class Module41VideoFragment extends Fragment {
     {
         super.onPause();
         exoPlayer.pause();
-        handler.removeCallbacksAndMessages(null); // Hủy bỏ tất cả các tin nhắn và ràng buộc
-        onBackPressedCallback.setEnabled(false);
+        handler.removeCallbacksAndMessages(null);
     }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        handler.removeCallbacksAndMessages(null); // Hủy bỏ tất cả các tin nhắn và ràng buộc
-        onBackPressedCallback.setEnabled(false);
     }
-
 }

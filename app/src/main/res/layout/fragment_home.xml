@@ -28,12 +28,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/textViewGreeting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/poppins"
-                    android:text="Chào buổi sáng, name"
+                    android:text="Chào , name"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />

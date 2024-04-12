@@ -1,15 +1,6 @@
 package vn.id.houta.myapplication.authentication;
 
-import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,32 +10,38 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-import vn.id.houta.myapplication.AuthenticationActivity;
 import vn.id.houta.myapplication.R;
-import vn.id.houta.myapplication.RegisterActivity;
+import vn.id.houta.myapplication.database.FirebaseHelper;
+import vn.id.houta.myapplication.model.User;
 
 public class RegisterFragment extends Fragment {
     View view;
     Fragment currentFragment;
+    User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().show();
 
         RadioButton radio0 = view.findViewById(R.id.radio0);
         RadioButton radio1 = view.findViewById(R.id.radio1);
@@ -115,19 +112,20 @@ public class RegisterFragment extends Fragment {
                     Toast.makeText(getActivity(), "Hãy chọn giới tính", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String age = null;
+                int age = -1;
                 for (int i = 0; i < radioButtons.length; i++) {
                     if (radioButtons[i].isChecked()){
-                        age = radioButtons[i].getText().toString();
+                        age = i + 1;
                         break;
                     }
                 }
-                if (age == null){
+                if (age == -1){
                     Toast.makeText(getActivity(), "Hãy chọn tuổi của bạn", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                user = new User(txt_name, sex, age);
 
-                RegisterSubFragment registerSubFragment = new RegisterSubFragment();
+                RegisterSubFragment registerSubFragment = new RegisterSubFragment(user);
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(
                                 R.anim.slide_in_bottom, R.anim.slide_out_bottom,
@@ -145,7 +143,12 @@ public class RegisterFragment extends Fragment {
     public static class RegisterSubFragment extends Fragment {
         EditText email, password, repassword;
         CheckBox checkBox;
+        User user;
         private FirebaseAuth auth;
+
+        public RegisterSubFragment(User user) {
+            this.user = user;
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -175,7 +178,9 @@ public class RegisterFragment extends Fragment {
                     } else if (!txt_password.contentEquals(txt_repassword)){
                         Toast.makeText(requireContext(), "Mật khẩu phải không khớp", Toast.LENGTH_SHORT).show();
                     } else {
-                        register(txt_email, txt_password);
+//                        register(txt_email, txt_email);
+                        new FirebaseHelper().registerUser(requireContext(), txt_email, txt_password,
+                                user, requireActivity().getSupportFragmentManager());
                     }
                 }
             });
@@ -195,16 +200,20 @@ public class RegisterFragment extends Fragment {
 
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             CollectionReference usersRef = db.collection("users");
+
                             HashMap<String, Object> userMap = new HashMap<>();
                             userMap.put("id", userid);
+                            userMap.put("age", "offline");
+                            userMap.put("name", "offline");
+                            userMap.put("gender", "offline");
                             userMap.put("imageURL", "default");
                             userMap.put("status", "offline");
-                            userMap.put("search", email);
 
-                            usersRef.document(userid).set(userMap) .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            usersRef.document(email).set(userMap) .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
+                                        
                                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                                         fragmentManager.beginTransaction()
                                             .setCustomAnimations(
@@ -225,4 +234,5 @@ public class RegisterFragment extends Fragment {
                 });
         }
     }
+
 }

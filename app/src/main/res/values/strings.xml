@@ -15,7 +15,7 @@
 
     // Register
     <string name="select_age">Chọn tuổi của bé</string>
-    
+
     //Forget-passwd
     <string name="title_1_forgetpasswd">Quên mật khẩu</string>
     <string name="title_2_forgetpasswd">Xác minh</string>
@@ -46,7 +46,7 @@
     <string name="module4">Số đếm</string>
     <string name="module4_1">Học số đếm</string>
     <string name="module4_2">Luyện tập số đếm</string>
-    
+
     //feedback video
     <string name="feedback">Phản hồi</string>
     <string name="feedback_title">Phản hồi</string>
@@ -58,4 +58,6 @@
     <string name="feedback_video_option5">Hình ảnh bị vỡ</string>
     <string name="feedback_video_option6">Khác</string>
     <string name="feedback_video_content">Chia sẻ lý do bạn báo cáo vấn đề này</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
