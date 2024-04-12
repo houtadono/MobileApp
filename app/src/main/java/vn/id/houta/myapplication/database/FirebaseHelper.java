@@ -191,7 +191,7 @@ public class FirebaseHelper {
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         String quizID = document.getId();
                         Quiz quiz = document.toObject(Quiz.class);
-
+                        quiz.setQuizId(quizID);
                         callback.onGetQuizCallback(quiz);
                     }
                 } else {

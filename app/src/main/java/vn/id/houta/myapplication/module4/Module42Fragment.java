@@ -43,6 +43,7 @@ public class Module42Fragment extends Fragment {
         listQuiz = new ArrayList<>();
         listViewQuiz = view.findViewById(R.id.listViewQuiz);
         quizListViewAdapter = new QuizListViewAdapter(getActivity(), listQuiz);
+        listViewQuiz.setAdapter(quizListViewAdapter);
 
         new FirebaseHelper().getQuizs(quiz -> {
             if (quiz != null) {

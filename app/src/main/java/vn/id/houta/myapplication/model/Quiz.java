@@ -3,13 +3,13 @@ package vn.id.houta.myapplication.model;
 public class Quiz {
     private String quizId;
     private String title;
-    private String time, image;
-    private int questionCount, level;
+    private String image;
+    private int time, questionCount, level;
 
     public Quiz() {
     }
 
-    public Quiz(String quizId, String title, String time, String image, int questionCount, int level) {
+    public Quiz(String quizId, String title, int time, String image, int questionCount, int level) {
         this.quizId = quizId;
         this.title = title;
         this.time = time;
@@ -50,11 +50,11 @@ public class Quiz {
         this.title = title;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 
