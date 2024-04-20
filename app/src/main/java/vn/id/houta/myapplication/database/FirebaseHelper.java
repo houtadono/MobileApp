@@ -28,6 +28,7 @@ import vn.id.houta.myapplication.R;
 import vn.id.houta.myapplication.authentication.LoginFragment;
 import vn.id.houta.myapplication.model.Lesson;
 import vn.id.houta.myapplication.model.Quiz;
+import vn.id.houta.myapplication.model.Ranking;
 import vn.id.houta.myapplication.model.User;
 import vn.id.houta.myapplication.model.UserLesson;
 
@@ -51,6 +52,11 @@ public class FirebaseHelper {
 
     public interface GetQuizCallback {
         void onGetQuizCallback(Quiz quiz);
+    }
+
+    public interface GetRankCallback{
+        void onGetRankUserCallback(Ranking ranking);
+        void onGetCurrentRankCallback(Ranking ranking);
     }
 
     public void getLessonsForUser(final GetLessonCallback callback) {
@@ -115,7 +121,7 @@ public class FirebaseHelper {
         DocumentReference userLessonsRef = db.collection("users").document(email).collection("userlessons").document(lessonID);
         Map<String, Integer> data = new HashMap<>();
         data.put("timesStudy", timesStudy);
-        userLessonsRef.set(data);
+        userLessonsRef.set(data, SetOptions.merge());
     }
 
     public void setHeartLessonUser(String lessonID, boolean isLiked) {
@@ -244,6 +250,32 @@ public class FirebaseHelper {
     public String getNameCurrentUser() {
         FirebaseUser user = auth.getCurrentUser();
         return user != null ? user.getDisplayName() : "unknown";
+    }
+
+    public void getRankingsModule4(GetRankCallback callback){
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        CollectionReference leaderboardRef = db.collection("leaderboard4");
+        leaderboardRef.orderBy("score", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        Ranking ranking = document.toObject(Ranking.class);
+                        String id = document.getId();
+                        ranking.setId(id);
+                        callback.onGetRankUserCallback(ranking);
+                        if(id.equals(firebaseUser.getEmail())){
+                            callback.onGetCurrentRankCallback(ranking);
+                        }
+                    }
+                } else {
+                    callback.onGetRankUserCallback(null);
+                }
+            } else {
+                handleTaskError(task);
+                callback.onGetRankUserCallback(null);
+            }
+        });
     }
 
     private void handleTaskError(Task<?> task) {

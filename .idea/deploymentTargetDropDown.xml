@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="URL http://houta.id.vn">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -10,12 +13,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Administrator\.android\avd\Pixel_4_API_22.avd" />
+                  <value value="C:\Users\Houta\.android\avd\Nexus_6P_API_29.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-12T20:44:22.901220700Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-19T13:57:13.783062200Z" />
         </State>
       </entry>
     </value>

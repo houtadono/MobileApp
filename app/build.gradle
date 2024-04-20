@@ -38,6 +38,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.databinding:databinding-runtime:8.3.2'
+    implementation 'androidx.compose.ui:ui-android:1.6.5'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -60,11 +61,22 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
 
     // pin view
     implementation 'io.github.chaosleung:pinview:1.4.4'
 
     // like button
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+
+    // Segment progressbar
+    implementation 'com.github.rayzone107:SegmentedProgressBar:1.01'
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
+    // chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // toast
+    implementation 'io.github.shashank02051997:FancyToast:2.0.2'
 }
 

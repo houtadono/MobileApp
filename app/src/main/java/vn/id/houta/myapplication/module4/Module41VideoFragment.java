@@ -39,7 +39,7 @@ import vn.id.houta.myapplication.MainActivity;
 import vn.id.houta.myapplication.R;
 import vn.id.houta.myapplication.database.FirebaseHelper;
 import vn.id.houta.myapplication.model.Lesson;
-import vn.id.houta.myapplication.util.FeedbackUtils;
+import vn.id.houta.myapplication.util.DialogUtils;
 
 
 public class Module41VideoFragment extends Fragment {
@@ -240,7 +240,7 @@ public class Module41VideoFragment extends Fragment {
         }, this.lesson.getLessonId());
 
         // Feedback
-        view.findViewById(R.id.btn_feedback).setOnClickListener(v -> FeedbackUtils.showFeebackVideoAlert(getContext()));
+        view.findViewById(R.id.btn_feedback).setOnClickListener(v -> DialogUtils.showFeebackVideoAlert(getContext()));
 
         if(this.nextLesson != null){
             ((TextView)view.findViewById(R.id.textViewNextTittleVideo)).setText(this.nextLesson.getTitle());

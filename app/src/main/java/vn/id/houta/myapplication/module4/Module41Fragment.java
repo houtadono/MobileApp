@@ -14,15 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -32,7 +27,6 @@ import vn.id.houta.myapplication.model.Lesson;
 
 public class Module41Fragment extends Fragment {
 
-    FirebaseUser firebaseUser;
     SearchView searchView;
     TextView textViewTitle;
     ArrayList<Lesson> listLesson;
@@ -44,41 +38,39 @@ public class Module41Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_module4_1, container, false);
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
-        textViewTitle = view.findViewById(R.id.textViewTitle);
-        searchView = view.findViewById(R.id.search);
+//        Toolbar toolbar = view.findViewById(R.id.toolbar);
+//        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+////        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        toolbar.setNavigationOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+//        textViewTitle = view.findViewById(R.id.textViewTitle);
+//        searchView = view.findViewById(R.id.search);
 //        AutoCompleteTextView searchText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
 //        searchView.setOnQueryTextListener(new)
-        searchView.setOnSearchClickListener(v -> {
-            // Xử lý khi thanh tìm kiếm được mở ra
-            System.out.println("Open");
-            textViewTitle.setText("");
-        });
-        searchView.setOnCloseListener(() -> {
-            System.out.println("Close");
-            textViewTitle.setText(getResources().getString(R.string.tittle_fragment_module4_submain1));
-            return false;
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                lessonListViewAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                lessonListViewAdapter.getFilter().filter(newText);
-                lessonListViewAdapter.notifyDataSetChanged();
-                return false;
-            }
-        });
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
+//        searchView.setOnSearchClickListener(v -> {
+//            // Xử lý khi thanh tìm kiếm được mở ra
+//            System.out.println("Open");
+//            textViewTitle.setText("");
+//        });
+//        searchView.setOnCloseListener(() -> {
+//            System.out.println("Close");
+//            textViewTitle.setText(getResources().getString(R.string.tittle_fragment_module4_submain1));
+//            return false;
+//        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                lessonListViewAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                lessonListViewAdapter.getFilter().filter(newText);
+//                lessonListViewAdapter.notifyDataSetChanged();
+//                return false;
+//            }
+//        });
         listLesson = new ArrayList<>();
         listViewLesson = view.findViewById(R.id.listViewLesson);
         lessonListViewAdapter = new LessonListViewAdapter(getActivity(), listLesson);
@@ -152,7 +144,7 @@ public class Module41Fragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             View viewLesson;
             if (convertView == null) {
-                viewLesson = View.inflate(parent.getContext(), R.layout.lesson_card_view, null);
+                viewLesson = View.inflate(parent.getContext(), R.layout.item_lesson_card_view, null);
             } else viewLesson = convertView;
 
             final Lesson lesson = (Lesson) getItem(position);
@@ -172,8 +164,8 @@ public class Module41Fragment extends Fragment {
 
             int percent = lesson.getPercent();
             ((ProgressBar) viewLesson.findViewById(R.id.progressBar)).setProgress(percent);
-            ((TextView) viewLesson.findViewById(R.id.textViewPercent)).setText(String.format("%d%%", percent));
-            ((TextView) viewLesson.findViewById(R.id.textViewTimeVideo)).setText(lesson.getTimeVideo());
+//            ((TextView) viewLesson.findViewById(R.id.textViewPercent)).setText(String.format("%d%%", percent));
+            ((TextView) viewLesson.findViewById(R.id.textViewTimeVideo)).setText(lesson.getTimeTotal());
 
             return viewLesson;
         }

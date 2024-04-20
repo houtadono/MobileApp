@@ -1,9 +1,4 @@
 package vn.id.houta.myapplication;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -45,15 +46,7 @@ public class OnboardingActivity extends AppCompatActivity {
         nextbtn = findViewById(R.id.nextbtn);
         skipbtn = findViewById(R.id.skipButton);
 
-        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
-        isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
-
-        if (!isFirstRun) {
-            Intent i = new Intent(OnboardingActivity.this, AuthenticationActivity.class);
-            startActivity(i);
-            finish();
-        }
         backbtn.setVisibility(View.INVISIBLE);
         backbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +64,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 if (getitem(0) < 3)
                     mSLideViewPager.setCurrentItem(getitem(1), true);
                 else {
+                    sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("isFirstRun", false);
                     editor.apply();
@@ -78,6 +72,7 @@ public class OnboardingActivity extends AppCompatActivity {
                     Intent i = new Intent(OnboardingActivity.this, AuthenticationActivity.class);
                     startActivity(i);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
 
             }
@@ -85,6 +80,7 @@ public class OnboardingActivity extends AppCompatActivity {
         skipbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("isFirstRun", false);
                 editor.apply();
@@ -92,6 +88,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 Intent i = new Intent(OnboardingActivity.this, AuthenticationActivity.class);
                 startActivity(i);
                 finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

@@ -1,33 +1,23 @@
 package vn.id.houta.myapplication.module4;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-import vn.id.houta.myapplication.AuthenticationActivity;
 import vn.id.houta.myapplication.R;
-import vn.id.houta.myapplication.RegisterActivity;
-import vn.id.houta.myapplication.database.FirebaseHelper;
 import vn.id.houta.myapplication.model.Quiz;
 
 public class Module42Fragment extends Fragment {
     ListView listViewQuiz;
     ArrayList<Quiz> listQuiz;
-    QuizListViewAdapter quizListViewAdapter;
+//    QuizListViewAdapter quizListViewAdapter;
     public Module42Fragment() {
         // Required empty public constructor
     }
@@ -37,78 +27,75 @@ public class Module42Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_module4_2, container, false);
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        final int[] idCardQuiz = {R.id.card_quiz_random, R.id.card_quiz_comparison, R.id.card_quiz_counting};
+        ArrayList<Quiz> listQuiz = new ArrayList<>();
+        listQuiz.add(new Quiz("random", 15, 20));
+        listQuiz.add(new Quiz("comparison", 8, 10));
+        listQuiz.add(new Quiz("counting", 8, 10));
 
-        listQuiz = new ArrayList<>();
-        listViewQuiz = view.findViewById(R.id.listViewQuiz);
-        quizListViewAdapter = new QuizListViewAdapter(getActivity(), listQuiz);
-        listViewQuiz.setAdapter(quizListViewAdapter);
-
-        new FirebaseHelper().getQuizs(quiz -> {
-            if (quiz != null) {
-                listQuiz.add(quiz);
-                System.out.println("add pre quiz " + quiz.getQuizId());
-                quizListViewAdapter.notifyDataSetChanged();
-            }
-        });
+        for(int i = 0; i < listQuiz.size(); i++){
+            final Quiz currentQuiz = listQuiz.get(i);
+            view.findViewById(idCardQuiz[i]).setOnClickListener( v->{
+                Intent intent = new Intent(requireActivity(), QuizActivity.class);
+                intent.putExtra("QUIZ_EXTRA", currentQuiz);
+                startActivity(intent);
+                requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            });
+        }
 
         return view;
     }
-    class QuizListViewAdapter extends BaseAdapter {
-
-        private  ArrayList<Quiz> listQuiz;
-
-        public QuizListViewAdapter(Context context, ArrayList<Quiz> listQuiz) {
-            this.listQuiz = listQuiz;
-        }
-
-        @Override
-        public int getCount() {
-            return this.listQuiz.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return this.listQuiz.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View viewQuiz;
-            if (convertView == null) {
-                viewQuiz = View.inflate(parent.getContext(), R.layout.quiz_card_view, null);
-            } else viewQuiz = convertView;
-
-            final Quiz currentQuiz = (Quiz)getItem(position);
-
-            TextView titleTextView = viewQuiz.findViewById(R.id.quiz_title_text);
-
-            titleTextView.setText(currentQuiz.getTitle());
-            ((ImageView) viewQuiz.findViewById(R.id.imageViewQuiz)).setImageResource(
-                getResources().getIdentifier(currentQuiz.getImage(), "drawable", requireActivity().getPackageName())
-            );
-
-            viewQuiz.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(requireActivity(), QuizActivity.class);
-                    intent.putExtra("QUIZ_EXTRA", currentQuiz);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            });
-
-            return viewQuiz;
-        }
-    }
+//    class QuizListViewAdapter extends BaseAdapter {
+//
+//        private  ArrayList<Quiz> listQuiz;
+//
+//        public QuizListViewAdapter(Context context, ArrayList<Quiz> listQuiz) {
+//            this.listQuiz = listQuiz;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return this.listQuiz.size();
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return this.listQuiz.get(position);
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return 0;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            View viewQuiz;
+//            if (convertView == null) {
+//                viewQuiz = View.inflate(parent.getContext(), R.layout.quiz_card_view, null);
+//            } else viewQuiz = convertView;
+//
+//            final Quiz currentQuiz = (Quiz)getItem(position);
+//
+//            TextView titleTextView = viewQuiz.findViewById(R.id.quiz_title_text);
+//
+//            titleTextView.setText(currentQuiz.getTitle());
+//            ((ImageView) viewQuiz.findViewById(R.id.imageViewQuiz)).setImageResource(
+//                getResources().getIdentifier(currentQuiz.getImage(), "drawable", requireActivity().getPackageName())
+//            );
+//
+//            viewQuiz.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(requireActivity(), QuizActivity.class);
+//                    intent.putExtra("QUIZ_EXTRA", currentQuiz);
+//                    startActivity(intent);
+//                    requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                }
+//            });
+//
+//            return viewQuiz;
+//        }
+//    }
 }

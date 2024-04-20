@@ -4,40 +4,292 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bg_fragment"
     tools:context=".MainActivity">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:backgroundTint="@color/white"
-        app:itemIconTint="@color/bottom_navigation_text_colors"
-        app:itemRippleColor="@android:color/transparent"
-        app:itemTextColor="@color/bottom_navigation_text_colors"
-        app:labelVisibilityMode="labeled"
+        app:cardCornerRadius="0dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_marginBottom="-18dp"
+        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu">
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center_vertical">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="wrap_content"
-            android:layout_height="2dp"
-            android:background="@color/my_primary" />
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_item_nav1"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="40dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:layout_margin="1dp"
+                app:contentPaddingTop="10dp"
+                app:contentPaddingBottom="10dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                >
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/icon1"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/ic_outline_home_24"
+                        android:backgroundTint="@color/icon_navigation_item_selector"
+                        android:gravity="center|start" />
+                    <TextView
+                        android:id="@+id/title1"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:maxLines="1"
+                        android:text="Giáo dục"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_item_nav2"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="40dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
+                android:elevation="0dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:contentPaddingTop="10dp"
+                app:contentPaddingBottom="10dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/icon2"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/ic_chat"
+                        android:backgroundTint="@color/icon_navigation_item_selector"
+                        android:gravity="center|start" />
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/title2"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:maxLines="1"
+                        android:text="Nhắn tin"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_item_nav3"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="40dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
+                android:elevation="0dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:contentPaddingTop="10dp"
+                app:contentPaddingBottom="10dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/icon3"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/ic_baseline_edu"
+                        android:backgroundTint="@color/icon_navigation_item_selector"
+                        android:gravity="center|start"
+                        android:scaleType="centerInside" />
+                    <TextView
+                        android:id="@+id/title3"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:maxLines="1"
+                        android:text="Học tập"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_item_nav4"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="40dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
+                android:elevation="0dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:contentPaddingTop="10dp"
+                app:contentPaddingBottom="10dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/icon4"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/ic_note"
+                        android:backgroundTint="@color/icon_navigation_item_selector"
+                        android:gravity="center|start"
+                        android:scaleType="centerInside" />
+                    <TextView
+                        android:id="@+id/title4"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:maxLines="1"
+                        android:text="Ghi chú"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_item_nav5"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="40dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
+                android:elevation="0dp"
+                android:layout_weight="1"
+                android:layout_margin="1dp"
+                app:contentPaddingTop="10dp"
+                app:contentPaddingBottom="10dp"
+                app:contentPaddingLeft="8dp"
+                app:contentPaddingRight="8dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/icon5"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/ic_setting"
+                        android:backgroundTint="@color/icon_navigation_item_selector"
+                        android:gravity="center|start" />
+                    <TextView
+                        android:id="@+id/title5"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:maxLines="1"
+                        android:text="Cài đặt"
+                        android:visibility="gone"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="52dp" />
+    </com.google.android.material.card.MaterialCardView>
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/bottomNavigationView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/white"-->
+<!--        android:backgroundTint="@color/white"-->
+<!--        android:elevation="20dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:itemIconTint="@color/bottom_navigation_text_colors"-->
+<!--        app:itemRippleColor="@android:color/transparent"-->
+<!--        app:itemTextColor="@color/bottom_navigation_text_colors"-->
+<!--        app:labelVisibilityMode="labeled"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:menu="@menu/bottom_nav_menu"/>-->
 
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>

@@ -4,19 +4,27 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FF808080</color>
     <color name="brown">#CC615100</color>
-    <color name="blue_blur">#CC007FFF</color>
+    <color name="light_blue">#52c2ff</color>
     <color name="orange">#FF7F00</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="purple_900">#FF4A148C</color>
+    <color name="blue_cyan1">#FF5CE1E6</color>
+    <color name="blue_cyan2">#FF32C3D4</color>
+    <color name="light_cyan">#FFCDEEFF</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="light_slate_gray">#ff7383c0</color>
+    <color name="dark_slate_gray">#ff305450</color>
     <color name="light_gray">#d3d3d3</color>
+    <color name="red_600">#E53935</color>
+    <color name="lemon_chiffon">#fff4c7</color>
 
     <color name="my_dark_primary">#FF007FFF</color>
     <color name="my_primary">#FF007FFF</color>
 
-    <color name="bg_fragment">#FFD7EFFA</color>
+    <color name="bg_fragment">#CEEBF8</color>
     <color name="bg_btn">#FF007FFF</color>
     <color name="bg_card_module">#CC3F3D6C</color>
     <color name="bg_card_video">@color/brown</color>

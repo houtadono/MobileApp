@@ -1,29 +1,59 @@
 package vn.id.houta.myapplication.util;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
-
 import android.content.Context;
-import android.view.Gravity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import vn.id.houta.myapplication.R;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class FeedbackUtils {
+import vn.id.houta.myapplication.R;
+
+public class DialogUtils {
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
+
+    public static void showNetworkAlert(Context context, Runnable retryAction) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        // Inflate layout từ file XML
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_check_internet, null);
+        builder.setView(dialogView);
+
+        Button retryButton = dialogView.findViewById(R.id.btn_retry);
+        Button closeButton = dialogView.findViewById(R.id.btn_close);
+        AlertDialog dialog = builder.create();
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retryAction.run();
+                dialog.dismiss();
+            }
+        });
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
     public static void showFeebackVideoAlert(Context context) {
         BottomSheetDialog dialog = new BottomSheetDialog(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_feedback_video, null);
@@ -75,4 +105,6 @@ public class FeedbackUtils {
         });
         dialog.show();
     }
+
+
 }
