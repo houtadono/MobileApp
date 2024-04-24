@@ -7,10 +7,11 @@
     app:cardBackgroundColor="@color/lemon_chiffon"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_item_rank"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:contentPadding="8dp"
-        app:cardBackgroundColor="@color/teal_200"
+        app:cardBackgroundColor="@color/white"
         android:layout_marginVertical="2dp">
 
         <LinearLayout
@@ -45,9 +46,9 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_height="match_parent"
                 android:text="Name"/>
             <LinearLayout
@@ -60,8 +61,8 @@
                     android:id="@+id/textViewScoreUserRank"
                     android:layout_width="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     android:layout_marginEnd="10dp"
                     android:layout_height="match_parent"
@@ -70,7 +71,7 @@
                     android:id="@+id/textViewTimeUserRank"
                     android:layout_width="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:layout_marginEnd="10dp"
                     android:layout_height="match_parent"

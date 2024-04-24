@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -28,77 +30,62 @@ import vn.id.houta.myapplication.model.Lesson;
 public class Module41Fragment extends Fragment {
 
     SearchView searchView;
-    TextView textViewTitle;
+    TextView textViewCountLearned;
     ArrayList<Lesson> listLesson;
-    LessonListViewAdapter lessonListViewAdapter;
-    ListView listViewLesson;
+    LessonRecyclerViewAdapter lessonRecyclerViewAdapter;
+    static int count_learned = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_module4_1, container, false);
-//        Toolbar toolbar = view.findViewById(R.id.toolbar);
-//        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-////        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        toolbar.setNavigationOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
-//        textViewTitle = view.findViewById(R.id.textViewTitle);
-//        searchView = view.findViewById(R.id.search);
-//        AutoCompleteTextView searchText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-//        searchView.setOnQueryTextListener(new)
-//        searchView.setOnSearchClickListener(v -> {
-//            // Xử lý khi thanh tìm kiếm được mở ra
-//            System.out.println("Open");
-//            textViewTitle.setText("");
-//        });
-//        searchView.setOnCloseListener(() -> {
-//            System.out.println("Close");
-//            textViewTitle.setText(getResources().getString(R.string.tittle_fragment_module4_submain1));
-//            return false;
-//        });
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                lessonListViewAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                lessonListViewAdapter.getFilter().filter(newText);
-//                lessonListViewAdapter.notifyDataSetChanged();
-//                return false;
-//            }
-//        });
+
         listLesson = new ArrayList<>();
-        listViewLesson = view.findViewById(R.id.listViewLesson);
-        lessonListViewAdapter = new LessonListViewAdapter(getActivity(), listLesson);
-        listViewLesson.setAdapter(lessonListViewAdapter);
+
+        textViewCountLearned = view.findViewById(R.id.textViewCountLearned);
+        TextView textViewTimeLearned = view.findViewById(R.id.textViewTimeLearned);
+
+
+        RecyclerView recyclerViewLesson = view.findViewById(R.id.recyclerViewLesson);
+        recyclerViewLesson.setLayoutManager(new LinearLayoutManager(getActivity()));
+        lessonRecyclerViewAdapter = new LessonRecyclerViewAdapter(getActivity(), listLesson);
+        recyclerViewLesson.setAdapter(lessonRecyclerViewAdapter);
+        count_learned = 0;
         new FirebaseHelper().getLessonsForUser(lesson -> {
             if (lesson != null) {
                 listLesson.add(lesson);
                 System.out.println("add pre lesson " + lesson.getLessonId());
-                lessonListViewAdapter.notifyDataSetChanged();
+                if (lesson.getUserLesson().isLearned()) count_learned += 1;
+                textViewCountLearned.setText(String.format("Đã học: %d/%d", count_learned, listLesson.size()));
+                lessonRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
-//        lessonListViewAdapter = new LessonListViewAdapter(getActivity(), listLesson);
-//        listViewLesson = (ListView) view.findViewById(R.id.listViewLesson);
-//        listViewLesson.setAdapter(lessonListViewAdapter);
 
-//        listViewLesson.setOnItemClickListener((parent, view1, position, id) -> {
-//            Lesson product = (Lesson) lessonListViewAdapter.getItem(position);
-//        });
+        new FirebaseHelper().getTimeLearnToday(seconds->{
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+            textViewTimeLearned.setText("Số giờ hôm nay học: "+ hours + " giờ " + minutes + " phút");
+        });
 
+        view.findViewById(R.id.btn_statistic).setOnClickListener(v -> {
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.hide(Module41Fragment.this);
+            fragmentTransaction.add(R.id.frame_layout, new StatisticFragment());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
         return view;
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        textViewCountLearned.setText(String.format("Đã học: %d/%d", count_learned, listLesson.size()));
         if (!hidden) {
-            lessonListViewAdapter.notifyDataSetChanged();
+            lessonRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -110,6 +97,98 @@ public class Module41Fragment extends Fragment {
 //        foundLesson.ifPresent(lesson -> lesson.getUserLesson().setTimesStudy(timesStudy));
 //        lessonListViewAdapter.notifyDataSetChanged();
 //    }
+
+    class LessonRecyclerViewAdapter extends RecyclerView.Adapter<LessonRecyclerViewAdapter.ViewHolder> implements Filterable {
+        private ArrayList<Lesson> listLesson;
+        private ArrayList<Lesson> listLessonFull;
+
+        public LessonRecyclerViewAdapter(Context context, ArrayList<Lesson> listLesson) {
+            this.listLesson = listLesson;
+            this.listLessonFull = new ArrayList<>(listLesson);
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lesson_card_view, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            Lesson lesson = listLesson.get(position);
+            holder.textViewTitle.setText(lesson.getTitle());
+            holder.textViewLevel.setText("Cơ bản");
+            holder.textViewTime.setText(lesson.getTimeTotal());
+            holder.progressBar.setProgress(lesson.getPercent());
+
+            holder.cardView.setOnClickListener(v -> {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.hide((Module41Fragment.this));
+                fragmentTransaction.add(R.id.frame_layout, new Module41VideoFragment(lesson, listLesson));
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return listLesson.size();
+        }
+
+        @Override
+        public Filter getFilter() {
+            return lessonFilter;
+        }
+
+        private Filter lessonFilter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                ArrayList<Lesson> filteredList = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(listLessonFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (Lesson lesson : listLessonFull) {
+                        if (lesson.getTitle().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(lesson);
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                listLesson.clear();
+                listLesson.addAll((ArrayList<Lesson>) results.values);
+                notifyDataSetChanged();
+            }
+        };
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            private TextView textViewTitle;
+            private TextView textViewLevel;
+            private TextView textViewTime;
+            private ProgressBar progressBar;
+            private CardView cardView;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                textViewTitle = itemView.findViewById(R.id.textViewTittleVideo);
+                textViewLevel = itemView.findViewById(R.id.textViewLevelVideo);
+                textViewTime = itemView.findViewById(R.id.textViewTimeVideo);
+                progressBar = itemView.findViewById(R.id.progressBar);
+                cardView = itemView.findViewById(R.id.cardView);
+            }
+        }
+    }
+
 
     class LessonListViewAdapter extends BaseAdapter implements Filterable {
         ArrayList<Lesson> listLesson;

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import vn.id.houta.myapplication.R;
+import vn.id.houta.myapplication.database.FirebaseHelper;
 import vn.id.houta.myapplication.model.Question;
 import vn.id.houta.myapplication.model.Quiz;
 import vn.id.houta.myapplication.util.QuestionGenerator;
@@ -323,6 +324,10 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private void finishQuiz() {
         int warning = quiz.getQuestionCount() - correct - error;
         quiz.setCompletion(correct, error, warning, totalTime);
+        new FirebaseHelper().updateRankUser(correct*1000, totalTime);
+//        for(Question q : questionList){
+//            q.setImageQuestions(null);
+//        }
         finish();
         try{
             Intent intent = new Intent(getApplicationContext(), QuizCompletionActivity.class);

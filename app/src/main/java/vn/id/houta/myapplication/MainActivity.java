@@ -168,10 +168,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public void hideBottomNavigationBarAndStatus() {
 //        binding.bottomNavigationView.setVisibility(View.GONE);
+        bottom_layout.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     }
     public void showBottomNavigationBarAndStatus() {
+        bottom_layout.setVisibility(View.VISIBLE);
 //        binding.bottomNavigationView.setVisibility(View.VISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }

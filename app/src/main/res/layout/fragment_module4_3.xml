@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     android:orientation="vertical"
+    android:background="@color/bg_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".module4.Module43Fragment">
 
@@ -69,7 +70,7 @@
             android:layout_height="0dp"
             app:cardBackgroundColor="@color/white"
             android:layout_marginBottom="-20dp"
-            app:layout_constraintBottom_toTopOf="@+id/materialCardView3"
+            app:layout_constraintBottom_toTopOf="@+id/card_item_rank_you"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -87,10 +88,10 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView3"
+            android:id="@+id/card_item_rank_you"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/teal_200"
+            app:cardBackgroundColor="@color/orange"
             android:layout_margin="2dp"
             app:contentPadding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:cardBackgroundColor="@color/blue_cyan1"
+                    app:cardBackgroundColor="@color/white"
                     app:strokeWidth="0dp">
 
                     <TextView
@@ -115,8 +116,8 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:text="1"
-                        android:textColor="@color/white"
+                        android:text=".."
+                        android:textColor="@color/black"
                         android:textSize="24sp" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -132,7 +133,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Name"
+                    android:text="Bạn"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -150,7 +151,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="10dp"
                         android:gravity="center"
-                        android:text="Điểm số: 200"
+                        android:text="Điểm số: 0"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -161,7 +162,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="10dp"
                         android:gravity="center"
-                        android:text="12:00"
+                        android:text="0"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -170,11 +171,4 @@
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:visibility="gone"
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:paddingTop="10dp" />
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -35,9 +38,10 @@ public class QuizCompletionActivity extends AppCompatActivity {
     private ArrayList<Question> listQuestion;
     private ConstraintLayout layout_present_quiz;
     private ListView listViewQuestion;
+    private FrameLayout fragment_bxh;
     private QuestionListViewAdapter questionListViewAdapter;
 
-    private boolean showReviewQuiz = false;
+    private boolean showReviewQuiz = false, showLeaderboard = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,10 @@ public class QuizCompletionActivity extends AppCompatActivity {
                     layout_present_quiz.setVisibility(View.VISIBLE);
                     listViewQuestion.setVisibility(View.GONE);
                     showReviewQuiz = false;
+                }else if(showLeaderboard){
+                    layout_present_quiz.setVisibility(View.VISIBLE);
+                    fragment_bxh .setVisibility(View.GONE);
+                    showLeaderboard = false;
                 }else{
                     finish();
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -63,8 +71,8 @@ public class QuizCompletionActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> {
             callback.handleOnBackPressed();
         });
-
         layout_present_quiz = findViewById(R.id.layout_present_quiz);
+
         quiz = (Quiz) getIntent().getSerializableExtra("QUIZ_EXTRA");
         try {
             listQuestion = (ArrayList<Question>) getIntent().getSerializableExtra("LISTQUEST_EXTRA");
@@ -81,8 +89,7 @@ public class QuizCompletionActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.textViewWarning)).setText(String.valueOf(warning));
         ((TextView) findViewById(R.id.textViewTimeUse)).setText(String.valueOf(quiz.getTimeUse()));
         int score = correct * 1000;
-        ((TextView) findViewById(R.id.textViewScore)).setText(new DecimalFormat("#,###").format(score));
-
+        ((TextView) findViewById(R.id.textViewScore)).setText("Điểm số: "+ new DecimalFormat("#,###").format(score));
 
 
         PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
@@ -126,7 +133,7 @@ public class QuizCompletionActivity extends AppCompatActivity {
             btn_review_quiz.setVisibility(View.GONE);
         }
         btn_review_quiz.setOnClickListener(v->{
-            if(listQuestion == null){
+            if(listViewQuestion == null){
                 listViewQuestion = findViewById(R.id.view_pager_review_again);
                 questionListViewAdapter = new QuestionListViewAdapter(getApplicationContext(), listQuestion);
                 listViewQuestion.setAdapter(questionListViewAdapter);
@@ -141,9 +148,18 @@ public class QuizCompletionActivity extends AppCompatActivity {
             btn_leaderboard.setVisibility(View.GONE);
         }
         btn_leaderboard.setOnClickListener(v -> {
-
+            if(fragment_bxh == null){
+                fragment_bxh = findViewById(R.id.fragment_bxh);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_bxh, new Module43Fragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+            layout_present_quiz.setVisibility(View.GONE);
+            fragment_bxh.setVisibility(View.VISIBLE);
+            showLeaderboard = true;
         });
-
         findViewById(R.id.btn_back).setOnClickListener(v->{
             finish();
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -188,12 +204,15 @@ public class QuizCompletionActivity extends AppCompatActivity {
 
             final Question question = (Question) getItem(position);
             ((TextView)viewQuest.findViewById(R.id.textViewQuestNumber)).setText(String.format("Câu hỏi %d:", position+1));
-            ((ImageView)viewQuest.findViewById(R.id.quest_img1)).setImageBitmap(question.getImageQuestions().get(0).getBitmap());
-            int count_img = question.getImageQuestions().size();
-            if( count_img == 2){
-                ((ImageView)viewQuest.findViewById(R.id.quest_img2)).setImageBitmap(question.getImageQuestions().get(1).getBitmap());
+            if(question.getImageQuestions() != null){
+                ((ImageView)viewQuest.findViewById(R.id.quest_img1)).setImageBitmap(question.getImageQuestions().get(0).getBitmap());
+                int count_img = question.getImageQuestions().size();
+                if( count_img == 2){
+                    ((ImageView)viewQuest.findViewById(R.id.quest_img2)).setImageBitmap(question.getImageQuestions().get(1).getBitmap());
+                }
+                viewQuest.findViewById(R.id.card_img2).setVisibility(count_img != 2 ? View.GONE : View.VISIBLE);
             }
-            viewQuest.findViewById(R.id.card_img2).setVisibility(count_img != 2 ? View.GONE : View.VISIBLE);
+
 
             ((TextView)viewQuest.findViewById(R.id.question_textview)).setText(
                     question.getQuestionText()

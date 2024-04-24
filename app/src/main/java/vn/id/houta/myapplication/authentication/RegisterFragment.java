@@ -10,22 +10,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 import vn.id.houta.myapplication.R;
 import vn.id.houta.myapplication.database.FirebaseHelper;
@@ -77,20 +67,17 @@ public class RegisterFragment extends Fragment {
                 );
             }
         });
-        cardGirl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cardBoy.setActivated(false);
-                cardBoy.setStrokeColor(ContextCompat.getColorStateList(getContext(),R.color.transparent));
-                cardGirl.setActivated(true);
-                cardGirl.setStrokeColor(ContextCompat.getColorStateList(getContext(),R.color.my_primary));
-                ((TextView)view.findViewById(R.id.textSexBoy)).setTextColor(
-                        ContextCompat.getColorStateList(getContext(),R.color.black)
-                );
-                ((TextView)view.findViewById(R.id.textSexGirl)).setTextColor(
-                        ContextCompat.getColorStateList(getContext(),R.color.my_primary)
-                );
-            }
+        cardGirl.setOnClickListener(v -> {
+            cardBoy.setActivated(false);
+            cardBoy.setStrokeColor(ContextCompat.getColorStateList(getContext(),R.color.transparent));
+            cardGirl.setActivated(true);
+            cardGirl.setStrokeColor(ContextCompat.getColorStateList(getContext(),R.color.my_primary));
+            ((TextView)view.findViewById(R.id.textSexBoy)).setTextColor(
+                    ContextCompat.getColorStateList(getContext(),R.color.black)
+            );
+            ((TextView)view.findViewById(R.id.textSexGirl)).setTextColor(
+                    ContextCompat.getColorStateList(getContext(),R.color.my_primary)
+            );
         });
         EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         view.findViewById(R.id.btn_register1).setOnClickListener(new View.OnClickListener() {
@@ -187,52 +174,5 @@ public class RegisterFragment extends Fragment {
 
             return view;
         }
-
-        private void register(String email, String password){
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                            assert firebaseUser != null;
-                            String userid = firebaseUser.getUid();
-
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            CollectionReference usersRef = db.collection("users");
-
-                            HashMap<String, Object> userMap = new HashMap<>();
-                            userMap.put("id", userid);
-                            userMap.put("age", "offline");
-                            userMap.put("name", "offline");
-                            userMap.put("gender", "offline");
-                            userMap.put("imageURL", "default");
-                            userMap.put("status", "offline");
-
-                            usersRef.document(email).set(userMap) .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        
-                                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                        fragmentManager.beginTransaction()
-                                            .setCustomAnimations(
-                                                    R.anim.slide_in_bottom, R.anim.slide_out_left
-                                            )
-                                            .replace(R.id.frame_layout, new LoginFragment())
-                                            .commit();
-                                        Toast.makeText(requireContext(), "Đăng ký tài khoản thành công", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(requireContext(), "Đăng ký tài khoản thất bại", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(requireContext(), "Bạn không thể đăng ký bằng email hoặc mật khẩu này", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        }
     }
-
 }

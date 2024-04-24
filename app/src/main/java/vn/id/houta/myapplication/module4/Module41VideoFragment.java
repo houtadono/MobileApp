@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,13 +54,15 @@ public class Module41VideoFragment extends Fragment {
     Lesson lesson, nextLesson;
     ArrayList<Lesson> listLesson;
     FirebaseHelper fb;
-
+    private long[] customMarker = {10 * 1000};
+    private long startTimeMillis;
 
     public Module41VideoFragment(Lesson lesson, ArrayList<Lesson> listLesson) {
         this.lesson = lesson;
         this.listLesson = listLesson;
         if (listLesson.size() >= lesson.getStt())
             this.nextLesson = listLesson.get(lesson.getStt());
+        startTimeMillis= System.currentTimeMillis();
     }
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -93,11 +94,42 @@ public class Module41VideoFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.textViewTittleVideo)).setText(this.lesson.getTitle());
         int startTimeMillis = this.lesson.getUserLesson().getTimesStudy() * 1000;
-        save_time = startTimeMillis;
+        save_time = startTimeMillis/1000;
         full_toolbar = view.findViewById(R.id.full_toolbar);
-        handler  = new Handler(Looper.getMainLooper());
 
         PlayerView playerView = view.findViewById(R.id.player);
+        customMarker[0] = (long)(lesson.getTimesTotal() * 0.7 *1000);
+        playerView.setExtraAdGroupMarkers(customMarker,
+                new boolean[]{false});
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (exoPlayer != null && exoPlayer.isPlaying()) {
+                    long currentTime = exoPlayer.getCurrentPosition()/1000;
+                    if (currentTime == customMarker[0]/1000) {
+                        customMarker[0] -= 2000;
+                        exoPlayer.pause();
+                        System.out.println("Showwww");
+                        final boolean[] setIsLearned = {lesson.getUserLesson().isLearned()};
+                        System.out.println(setIsLearned[0]);
+                        DialogUtils.showQuestionVideoAlert(requireContext(),
+                                Integer.valueOf(lesson.getName().charAt(lesson.getName().length()-1)-'0'), lesson,
+                                () -> {
+                                    exoPlayer.play();
+                                    System.out.println(setIsLearned[0] + " "+lesson.getUserLesson().isLearned());
+                                    if(!setIsLearned[0] && lesson.getUserLesson().isLearned()) {
+                                        Module41Fragment.count_learned += 1;
+                                        fb.setLearnedLessonForUser(lesson.getLessonId(), true);
+                                    }
+                                }
+                        );
+                    }
+                }
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
+
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
         bt_fullscreen = view.findViewById(R.id.bt_fullscreen);
         ImageView bt_lockscreen = view.findViewById(R.id.exo_lock);
@@ -233,14 +265,17 @@ public class Module41VideoFragment extends Fragment {
             }
         });
 
-        TextView textView_heartCount = (TextView) view.findViewById(R.id.textViewHeartCount);
+        TextView textView_heartCount = view.findViewById(R.id.textViewHeartCount);
         textView_heartCount.setText(String.valueOf(this.lesson.getLikeCount()));
         fb.getHeartCountLesson(c->{
             textView_heartCount.setText(String.valueOf(c));
         }, this.lesson.getLessonId());
 
         // Feedback
-        view.findViewById(R.id.btn_feedback).setOnClickListener(v -> DialogUtils.showFeebackVideoAlert(getContext()));
+        view.findViewById(R.id.btn_feedback).setOnClickListener(v -> {
+            exoPlayer.pause();
+            DialogUtils.showFeebackVideoAlert(getContext(), () -> exoPlayer.play());
+        });
 
         if(this.nextLesson != null){
             ((TextView)view.findViewById(R.id.textViewNextTittleVideo)).setText(this.nextLesson.getTitle());
@@ -257,6 +292,13 @@ public class Module41VideoFragment extends Fragment {
             view.findViewById(R.id.card_next_lesson).setVisibility(View.GONE);
         }
         return view;
+    }
+
+    private void showDialogForAdMarker(int index) {
+        // Code để hiển thị dialog ở đây
+        // Ví dụ:
+        System.out.println("SHowoo");
+//        Toast.makeText(MainActivity.this, "Đã đến đánh dấu quảng cáo thứ " + (index + 1), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -290,7 +332,10 @@ public class Module41VideoFragment extends Fragment {
 //            return;
 //        }
 //        int timesStudy = (int) exoPlayer.getCurrentPosition() / 1000;
+        long viewDurationMillis = System.currentTimeMillis() - startTimeMillis;
+
         lesson.getUserLesson().setTimesStudy(save_time);
+        fb.increaseTimeLearnToday((int)viewDurationMillis/1000);
         fb.saveTimeStudyLessonForUser(lesson.getLessonId(), save_time);
         exoPlayer.stop();
     }

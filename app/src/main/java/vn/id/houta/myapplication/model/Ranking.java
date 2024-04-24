@@ -4,9 +4,11 @@ public class Ranking {
     private String id, name;
     private long score, time;
 
+    public void setId(String id) {
+        this.id = id;
+    }
     public Ranking() {
     }
-
     public Ranking(String id, String name, long score, long time) {
         this.id = id;
         this.name = name;
@@ -16,10 +18,6 @@ public class Ranking {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

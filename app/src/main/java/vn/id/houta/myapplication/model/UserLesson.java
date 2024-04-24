@@ -2,9 +2,15 @@ package vn.id.houta.myapplication.model;
 
 public class UserLesson {
     int timesStudy = 0;
-    boolean isLiked = false, isLearned = false;
+    boolean liked = false, learned = false;
 //    boolean
     public UserLesson(){
+    }
+
+    public UserLesson(int timesStudy, boolean liked, boolean learned) {
+        this.timesStudy = timesStudy;
+        this.liked = liked;
+        this.learned = learned;
     }
 
     public int getTimesStudy() {
@@ -16,18 +22,27 @@ public class UserLesson {
     }
 
     public boolean isLiked() {
-        return isLiked;
+        return liked;
     }
 
     public void setLiked(boolean liked) {
-        isLiked = liked;
+        this.liked = liked;
     }
 
     public boolean isLearned() {
-        return isLearned;
+        return learned;
     }
 
     public void setLearned(boolean learned) {
-        isLearned = learned;
+        this.learned = learned;
+    }
+
+    @Override
+    public String toString() {
+        return "UserLesson{" +
+                "timesStudy=" + timesStudy +
+                ", isLiked=" + liked +
+                ", isLearned=" + learned +
+                '}';
     }
 }

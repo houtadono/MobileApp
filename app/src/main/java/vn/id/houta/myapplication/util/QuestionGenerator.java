@@ -37,30 +37,6 @@ public class QuestionGenerator {
         return questionList;
     }
 
-//    public Question generateQuestion(String type, Context context) {
-//        Question question = new Question();
-//        String title_quest = null;
-//        if (type.equals("comparison")) {
-//            question = new QuestionComparison();
-//            Object[] questionInfo1 = generateRandomImage(context);
-//            String name1 = (String) questionInfo1[0];
-//            int count1 = (int) questionInfo1[1];
-//            Bitmap img1 = (Bitmap) questionInfo1[2];
-//
-//            Object[] questionInfo2 = generateRandomImage(context);
-//            String name2 = (String) questionInfo2[0];
-//            int count2 = (int) questionInfo2[1];
-//            Bitmap img2 = (Bitmap) questionInfo2[2];
-//            ((QuestionComparison) question).setImageRightBitmap(img2);
-//
-//            title_quest = String.format("So sánh số lượng %s và %s", name1, name2);
-//        }
-//        question.setQuestionText(title_quest);
-//
-////
-//        return question;
-//    }
-
     public static Question generateQuestion(Context context, int count_image) {
         Random random = new Random();
         ArrayList<String> options = new ArrayList<>();
@@ -111,6 +87,35 @@ public class QuestionGenerator {
         return new Question(questionText, options, correctAnswer, imageQuestions);
     }
 
+    public static Question generateQuestionVideo(Context context, int count1) {
+        Random random = new Random();
+        ArrayList<String> options = new ArrayList<>();
+        ArrayList<ImageQuestion> imageQuestions = new ArrayList<>();
+        Object[] nameAndImage1 = getRandomeElementImage();
+        String name1 = (String) nameAndImage1[0];
+        String source1 = (String) nameAndImage1[1];
+        Bitmap img1 = generateBitmapFromEleImg(context, source1, count1, true);
+        imageQuestions.add(new ImageQuestion(img1,name1,count1));
+
+        String questionText = "Đếm số lượng " + name1+"?";
+
+        ArrayList<Integer> numbers = new ArrayList<>();
+        while(numbers.size() < 3){
+            int randomNumber = random.nextInt(10) + 1;
+            if (randomNumber != count1 & !numbers.contains(randomNumber)) {
+                numbers.add(randomNumber);
+            }
+        }
+        int randomIndex = random.nextInt(numbers.size() + 1);
+        numbers.add(randomIndex, count1);
+
+        for(int i = 0; i < 4; i++){
+            options.add(String.format("%s. %d",(char) ('A' + i), numbers.get(i)));
+        }
+        String correctAnswer = String.valueOf((char)('A'+randomIndex));
+
+        return new Question(questionText, options, correctAnswer, imageQuestions);
+    }
 
 
     private static Bitmap generateBitmapFromEleImg(Context context, String source, int numRand, boolean horizontal) {

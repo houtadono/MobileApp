@@ -40,11 +40,11 @@ public class Module4Fragment extends Fragment {
             public Fragment createFragment(int position) {
                 switch (position) {
                     case 0:
-                        return new Module43Fragment();
+                        return new Module41Fragment();
                     case 1:
                         return new Module42Fragment();
                     case 2:
-                        return new Module41Fragment();
+                        return new Module43Fragment();
                     default:
                         return null;
                 }
@@ -80,6 +80,7 @@ public class Module4Fragment extends Fragment {
             int size = item2.getWidth() * 2;
             select.animate().x(size).setDuration(100);
         });
+
         item1.performClick();
         return view;
     }

@@ -1,10 +1,17 @@
 package vn.id.houta.myapplication.database;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,8 +25,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +64,9 @@ public class FirebaseHelper {
     public interface InfoLessonCallback {
         void onListenHeartCountCallback(int heartCount);
     }
+    public interface GetTimeLearnTodayCallback {
+        void onListenTimeLearnTodayCallback(int heartCount);
+    }
 
     public interface GetQuizCallback {
         void onGetQuizCallback(Quiz quiz);
@@ -56,7 +74,9 @@ public class FirebaseHelper {
 
     public interface GetRankCallback{
         void onGetRankUserCallback(Ranking ranking);
-        void onGetCurrentRankCallback(Ranking ranking);
+    }
+    public interface GetTimeLearnDailyCallback{
+        void onGetTimeLearnDaily( List<BarEntry> lbe, List<String> days);
     }
 
     public void getLessonsForUser(final GetLessonCallback callback) {
@@ -80,6 +100,7 @@ public class FirebaseHelper {
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         String lessonId = document.getId();
                         UserLesson userLesson = document.toObject(UserLesson.class);
+                        System.out.println(userLesson);
                         mapUserLessons.put(lessonId, userLesson);
                     }
                 }
@@ -124,10 +145,22 @@ public class FirebaseHelper {
         userLessonsRef.set(data, SetOptions.merge());
     }
 
+    public void setLearnedLessonForUser(String lessonID, boolean isLearned) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        Map<String, Object> data = new HashMap<>();
+        data.put("learned", isLearned);
+
+        db.collection("users")
+                .document(Objects.requireNonNull(firebaseUser.getEmail()))
+                .collection("userlessons")
+                .document(lessonID)
+                .set(data, SetOptions.merge());
+    }
+
     public void setHeartLessonUser(String lessonID, boolean isLiked) {
         FirebaseUser firebaseUser = auth.getCurrentUser();
         Map<String, Object> data = new HashMap<>();
-        data.put("isLiked", isLiked);
+        data.put("liked", isLiked);
 
         db.collection("users")
                 .document(Objects.requireNonNull(firebaseUser.getEmail()))
@@ -162,6 +195,70 @@ public class FirebaseHelper {
                 });
     }
 
+    public void getTimeLearnToday(GetTimeLearnTodayCallback callback){
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        Date date = new Date(System.currentTimeMillis());
+        String str_today = formatter.format(date);
+        db.collection("users").document(firebaseUser.getEmail())
+                .collection("statistics").document(str_today)
+                .addSnapshotListener((snapshot, e) -> {
+                    int seconds = 0;
+                    if (snapshot != null && snapshot.exists()) {
+                        Long a = snapshot.getLong("timeStudy");
+                        seconds = a==null? 0 : a.intValue();
+                    }
+                    callback.onListenTimeLearnTodayCallback(seconds);
+                });
+    }
+    public void increaseTimeLearnToday(int timeStudy) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        Date date = new Date(System.currentTimeMillis());
+        String str_today = formatter.format(date);
+        DocumentReference userLessonsRef = db.collection("users").document(firebaseUser.getEmail())
+                .collection("statistics").document(str_today);
+        final int[] timeLearned = {0};
+        userLessonsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    timeLearned[0] = document.getLong("timeStudy").intValue();
+                }
+            }
+        } );
+
+        Map<String, Integer> data = new HashMap<>();
+        data.put("timeStudy", timeStudy + timeLearned[0]);
+        userLessonsRef.set(data, SetOptions.merge());
+    }
+
+    public void getTimeLearnDaily(GetTimeLearnDailyCallback callback){
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        List<String> days = new ArrayList<String>();
+        List<BarEntry> l = new ArrayList<>();
+        db.collection("users").document(firebaseUser.getEmail())
+                .collection("statistics")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        int c = 0;
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                long seconds = document.getLong("timeStudy");
+                                days.add(document.getId());
+                                l.add(new BarEntry(c, (float) seconds /3600));
+                                c+=1;
+//        , Float.parseFloat(document.getId(
+                            }
+                            callback.onGetTimeLearnDaily(l,days);
+                        }
+                    } else {
+                        handleTaskError(task);
+                    }
+                });
+    }
     public void getQuizs(GetQuizCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
 //        if (user == null) {
@@ -215,14 +312,32 @@ public class FirebaseHelper {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = auth.getCurrentUser();
+                        final FirebaseUser firebaseUser = auth.getCurrentUser();
                         if (firebaseUser == null) return;
 
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(user.getName()).build();
-                        firebaseUser.updateProfile(profileUpdates);
-
                         String userid = firebaseUser.getUid();
+                        int id_image = user.getGender() == 1 ? R.drawable.img_gender_boy : R.drawable.img_gender_girl;
+                        Drawable drawable = context.getDrawable(id_image);
+                        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                        StorageReference imageRef = storageRef.child("avatarUser/"+email);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
+                        UploadTask uploadTask = imageRef.putBytes(data);
+                        uploadTask.addOnSuccessListener(taskSnapshot -> {
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                String imageURL = uri.toString();
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setPhotoUri(Uri.parse(imageURL)).build();
+                                firebaseUser.updateProfile(profileUpdates);
+                                UserProfileChangeRequest displayNameUpdate = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(user.getName()).build();
+                                firebaseUser.updateProfile(displayNameUpdate);
+                                FirebaseAuth.getInstance().signOut();
+                            });
+                        });
+
                         CollectionReference usersRef = db.collection("users");
                         user.setEmail(email);
                         user.setUserid(userid);
@@ -252,10 +367,11 @@ public class FirebaseHelper {
         return user != null ? user.getDisplayName() : "unknown";
     }
 
-    public void getRankingsModule4(GetRankCallback callback){
+    public void getRankings(GetRankCallback callback){
         FirebaseUser firebaseUser = auth.getCurrentUser();
         CollectionReference leaderboardRef = db.collection("leaderboard4");
-        leaderboardRef.orderBy("score", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
+        leaderboardRef.orderBy("score", Query.Direction.DESCENDING).orderBy("time", Query.Direction.ASCENDING)
+                .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 if (querySnapshot != null && !querySnapshot.isEmpty()) {
@@ -263,10 +379,9 @@ public class FirebaseHelper {
                         Ranking ranking = document.toObject(Ranking.class);
                         String id = document.getId();
                         ranking.setId(id);
+                        boolean isCurrent = id.equals(firebaseUser.getEmail());
+                        if(isCurrent) ranking.setName("Bạn");
                         callback.onGetRankUserCallback(ranking);
-                        if(id.equals(firebaseUser.getEmail())){
-                            callback.onGetCurrentRankCallback(ranking);
-                        }
                     }
                 } else {
                     callback.onGetRankUserCallback(null);
@@ -275,6 +390,37 @@ public class FirebaseHelper {
                 handleTaskError(task);
                 callback.onGetRankUserCallback(null);
             }
+        });
+    }
+
+    public void updateRankUser(int score, int totalTime) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        String email = firebaseUser.getEmail();
+        Ranking new_rank = new Ranking(email,firebaseUser.getDisplayName(), score, totalTime);
+        CollectionReference leaderboardRef = db.collection("leaderboard4");
+        leaderboardRef.document(email).get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Ranking old_rank = documentSnapshot.toObject(Ranking.class);
+                        int old_time = (int) old_rank.getTime();
+                        int old_score = (int) old_rank.getScore();
+                        if(score < old_score || (score == old_score && old_time < totalTime)){
+                            return;
+                        }
+                    }
+                    leaderboardRef.document(email).set(new_rank);
+                });
+    }
+
+    public void loadAvatarFromEmail(Context context, ImageView imageView, String email) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child("avatarUser/"+email);
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            Glide.with(context)
+                    .load(uri)
+                    .circleCrop()
+                    .placeholder(R.drawable.img_gender_boy)
+//                    .error(R.drawable.error_avatar)
+                    .into(imageView);
         });
     }
 

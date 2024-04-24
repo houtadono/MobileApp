@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 
@@ -43,7 +44,8 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.btn_get_started).setOnClickListener(v -> {
             requireActivity().findViewById(R.id.icon3).performClick();
         });
-        Glide.with(requireContext()).load("https://th.bing.com/th/id/OIP.Zkz6fuH31wOe-dsfqkBQkQAAAA?w=233&h=183&c=7&r=0&o=5&dpr=1.3&pid=1.7")
+        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl());
+        Glide.with(requireContext()).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
                 .circleCrop().into((ImageView) view.findViewById(R.id.avatarUser));
 
         view.findViewById(R.id.module4).setOnClickListener(v -> {

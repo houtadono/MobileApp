@@ -75,7 +75,7 @@
                 android:textStyle="bold"
                 android:textColor="@drawable/text_tab_color_selector"
                 android:clickable="true"
-                android:text="Thống kê"
+                android:text="Xếp hạng"
                 android:gravity="center"/>
 
         </LinearLayout>

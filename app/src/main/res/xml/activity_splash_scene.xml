@@ -67,8 +67,8 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:scaleX="1"
-            android:scaleY="1" />
+            android:scaleX="0"
+            android:scaleY="0" />
         <Constraint
             android:id="@+id/gifImageView"
             android:scaleX="0"
@@ -83,8 +83,8 @@
         <Constraint
             android:id="@+id/imageView8"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginBottom="80dp"
 
             motion:layout_constraintBottom_toBottomOf="parent"
